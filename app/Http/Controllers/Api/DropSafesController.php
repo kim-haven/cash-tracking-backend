@@ -1,0 +1,73 @@
+<?php
+
+namespace App\Http\Controllers\Api;
+
+use App\Http\Controllers\Controller;
+use App\Http\Requests\StoreDropSafeRequest;
+use App\Http\Requests\UpdateDropSafeRequest;
+use App\Http\Resources\DropSafeResource;
+use App\Models\DropSafe;
+use Illuminate\Http\Request;
+
+class DropSafesController extends Controller
+{
+    /**
+     * Display a listing of drop safe entries.
+     */
+    public function index(Request $request)
+    {
+        $query = DropSafe::query()
+            ->orderByDesc('prepared_date')
+            ->orderByDesc('id');
+
+        if ($request->filled('bag_no')) {
+            $query->where('bag_no', $request->string('bag_no'));
+        }
+
+        if ($request->filled('prepared_date')) {
+            $query->whereDate('prepared_date', $request->string('prepared_date'));
+        }
+
+        return DropSafeResource::collection($query->paginate(50));
+    }
+
+    /**
+     * Store a newly created drop safe entry.
+     */
+    public function store(StoreDropSafeRequest $request)
+    {
+        $dropSafe = DropSafe::create($request->validated());
+
+        return (new DropSafeResource($dropSafe->fresh()))
+            ->response()
+            ->setStatusCode(201);
+    }
+
+    /**
+     * Display the specified drop safe entry.
+     */
+    public function show(DropSafe $drop_safe)
+    {
+        return new DropSafeResource($drop_safe);
+    }
+
+    /**
+     * Update the specified drop safe entry.
+     */
+    public function update(UpdateDropSafeRequest $request, DropSafe $drop_safe)
+    {
+        $drop_safe->update($request->validated());
+
+        return new DropSafeResource($drop_safe->refresh());
+    }
+
+    /**
+     * Remove the specified drop safe entry.
+     */
+    public function destroy(DropSafe $drop_safe)
+    {
+        $drop_safe->delete();
+
+        return response()->noContent();
+    }
+}
