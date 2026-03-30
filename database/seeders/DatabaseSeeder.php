@@ -23,5 +23,6 @@ class DatabaseSeeder extends Seeder
         ]);
 
         $this->call(RegisterDropSeeder::class);
+        $this->call(DropSafeSeeder::class);
     }
 }
