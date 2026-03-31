@@ -31,7 +31,6 @@ class StoreDropSafeRequest extends FormRequest
             'courier_given_by' => 'nullable|string|max:255',
             'courier_received_by' => 'nullable|string|max:255',
             'courier_amount' => 'nullable|numeric',
-            'action' => 'nullable|string|max:64|in:update_courier',
         ];
     }
 

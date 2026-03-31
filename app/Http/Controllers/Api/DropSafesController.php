@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\SoftDeleteDropSafeRequest;
 use App\Http\Requests\StoreDropSafeRequest;
 use App\Http\Requests\UpdateDropSafeRequest;
 use App\Http\Resources\DropSafeResource;
@@ -62,11 +63,18 @@ class DropSafesController extends Controller
     }
 
     /**
-     * Remove the specified drop safe entry.
+     * Soft-delete the specified drop safe entry.
      */
-    public function destroy(DropSafe $drop_safe)
+    public function destroy(SoftDeleteDropSafeRequest $request, DropSafe $drop_safe)
     {
-        $drop_safe->delete();
+        $data = $request->validated();
+
+        $drop_safe->update([
+            'is_deleted' => true,
+            'deleted_at' => now(),
+            'deleted_by' => (string) $data['deleted_by'],
+            'delete_reason' => $data['delete_reason'] ?? null,
+        ]);
 
         return response()->noContent();
     }
