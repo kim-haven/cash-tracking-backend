@@ -5,7 +5,9 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\AddTimeOutRequest;
 use App\Http\Requests\BulkTimeOutUpdateRequest;
+use App\Http\Requests\SoftDeleteRegisterDropRequest;
 use App\Http\Requests\StoreRegisterDropRequest;
+use App\Http\Requests\UpdateRegisterDropRequest;
 use App\Http\Resources\RegisterDropResource;
 use App\Models\RegisterDrop;
 use Illuminate\Http\Request;
@@ -91,9 +93,9 @@ class RegisterDropsController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, RegisterDrop $register_drop)
+    public function update(UpdateRegisterDropRequest $request, RegisterDrop $register_drop)
     {
-        $register_drop->update($this->rules($request, sometimes: true));
+        $register_drop->update($request->validated());
 
         return new RegisterDropResource($register_drop->refresh());
     }
@@ -101,29 +103,17 @@ class RegisterDropsController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(RegisterDrop $register_drop)
+    public function destroy(SoftDeleteRegisterDropRequest $request, RegisterDrop $register_drop)
     {
-        $register_drop->delete();
+        $data = $request->validated();
+
+        $register_drop->update([
+            'is_deleted' => true,
+            'deleted_at' => now(),
+            'deleted_by' => (string) $data['deleted_by'],
+            'delete_reason' => $data['delete_reason'] ?? null,
+        ]);
 
         return response()->noContent();
-    }
-
-    /**
-     * @return array<string, mixed>
-     */
-    private function rules(Request $request, bool $sometimes = false): array
-    {
-        $prefix = $sometimes ? 'sometimes|' : '';
-
-        return $request->validate([
-            'date' => $prefix.'required|date',
-            'register' => $prefix.'required|string|max:255',
-            'time_start' => $prefix.'required|date_format:H:i:s',
-            'time_end' => ($sometimes ? 'sometimes|' : '').'nullable|date_format:H:i:s',
-            'action' => $prefix.'required|string|max:255',
-            'cash_in' => $prefix.'required|numeric',
-            'initials' => $prefix.'required|string|max:16',
-            'notes' => ($sometimes ? 'sometimes|' : '').'nullable|string',
-        ]);
     }
 }
