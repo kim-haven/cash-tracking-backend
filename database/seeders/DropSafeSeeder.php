@@ -28,7 +28,6 @@ class DropSafeSeeder extends Seeder
                 'courier_given_by' => null,
                 'courier_received_by' => 'Marvin Avalos',
                 'courier_amount' => '5702.00',
-                'action' => 'update_courier',
             ],
             [
                 'bag_no' => '240179181',
@@ -41,7 +40,6 @@ class DropSafeSeeder extends Seeder
                 'courier_given_by' => null,
                 'courier_received_by' => 'Steven Lelona',
                 'courier_amount' => '4967.00',
-                'action' => 'update_courier',
             ],
             [
                 'bag_no' => '240179186',
@@ -54,7 +52,6 @@ class DropSafeSeeder extends Seeder
                 'courier_given_by' => null,
                 'courier_received_by' => 'Steven Lelona',
                 'courier_amount' => '3682.00',
-                'action' => 'update_courier',
             ],
             [
                 'bag_no' => '240179192',
@@ -67,7 +64,6 @@ class DropSafeSeeder extends Seeder
                 'courier_given_by' => null,
                 'courier_received_by' => 'Brian Martinez',
                 'courier_amount' => '5172.00',
-                'action' => 'update_courier',
             ],
         ];
 

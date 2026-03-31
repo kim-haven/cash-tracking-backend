@@ -12,8 +12,6 @@ class DropSafeResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        $actionKey = $this->action ?: 'update_courier';
-
         return [
             'id' => $this->id,
             'bag_no' => $this->bag_no,
@@ -26,27 +24,8 @@ class DropSafeResource extends JsonResource
             'courier_given_by' => $this->courier_given_by,
             'courier_received_by' => $this->courier_received_by,
             'courier_amount' => $this->courier_amount,
-            'action' => $actionKey,
-            'action_label' => $this->actionLabel($actionKey),
-            'action_icon' => $this->actionIcon($actionKey),
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ];
-    }
-
-    private function actionLabel(string $actionKey): string
-    {
-        return match ($actionKey) {
-            'update_courier' => 'Update courier',
-            default => 'Update courier',
-        };
-    }
-
-    private function actionIcon(string $actionKey): string
-    {
-        return match ($actionKey) {
-            'update_courier' => 'van',
-            default => 'van',
-        };
     }
 }

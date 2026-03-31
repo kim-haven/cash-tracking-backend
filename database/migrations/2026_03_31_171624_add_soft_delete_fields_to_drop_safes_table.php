@@ -12,7 +12,10 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('drop_safes', function (Blueprint $table) {
-            $table->string('action', 64)->default('update_courier')->after('courier_amount');
+            $table->boolean('is_deleted')->default(false)->after('courier_amount');
+            $table->timestamp('deleted_at')->nullable()->after('is_deleted');
+            $table->string('deleted_by')->nullable()->after('deleted_at');
+            $table->text('delete_reason')->nullable()->after('deleted_by');
         });
     }
 
@@ -22,7 +25,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('drop_safes', function (Blueprint $table) {
-            $table->dropColumn('action');
+            $table->dropColumn(['is_deleted', 'deleted_at', 'deleted_by', 'delete_reason']);
         });
     }
 };
