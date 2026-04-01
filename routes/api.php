@@ -1,10 +1,10 @@
 <?php
 
-use App\Http\Controllers\Api\DropSafesController;
-use App\Http\Controllers\Api\RegisterDropsController;
-use App\Http\Controllers\Api\ExpensesController;
+use App\Http\Controllers\Api\CashlessAtmEntriesController;
 use App\Http\Controllers\Api\CashOnHandsController;
-
+use App\Http\Controllers\Api\DropSafesController;
+use App\Http\Controllers\Api\ExpensesController;
+use App\Http\Controllers\Api\RegisterDropsController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/ping', function () {
@@ -16,6 +16,7 @@ Route::post('register-drops/bulk-time-out-update', [RegisterDropsController::cla
 
 Route::apiResource('register-drops', RegisterDropsController::class);
 Route::apiResource('drop-safes', DropSafesController::class);
+Route::apiResource('cashless-atm-entries', CashlessAtmEntriesController::class);
 
 Route::apiResource('expenses', ExpensesController::class);
 
