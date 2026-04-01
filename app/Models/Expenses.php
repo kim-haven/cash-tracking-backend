@@ -3,6 +3,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Expenses extends Model
 {
@@ -26,4 +27,9 @@ class Expenses extends Model
         'cash_in' => 'decimal:2',
         'cash_out' => 'decimal:2',
     ];
+
+    public function tips(): HasMany
+    {
+        return $this->hasMany(Tip::class, 'expense_id');
+    }
 }
