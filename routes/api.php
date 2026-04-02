@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\CashlessAtmEntriesController;
+use App\Http\Controllers\Api\CashReconciliationsController;
 use App\Http\Controllers\Api\CashOnHandsController;
 use App\Http\Controllers\Api\DropSafesController;
 use App\Http\Controllers\Api\ExpensesController;
@@ -19,6 +20,9 @@ Route::post('register-drops/bulk-time-out-update', [RegisterDropsController::cla
 Route::apiResource('register-drops', RegisterDropsController::class);
 Route::apiResource('drop-safes', DropSafesController::class);
 Route::apiResource('cashless-atm-entries', CashlessAtmEntriesController::class);
+
+
+Route::apiResource('cash-reconciliations', CashReconciliationsController::class);
 
 Route::apiResource('expenses', ExpensesController::class);
 
