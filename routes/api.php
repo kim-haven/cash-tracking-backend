@@ -7,7 +7,6 @@ use App\Http\Controllers\Api\DropSafesController;
 use App\Http\Controllers\Api\ExpensesController;
 use App\Http\Controllers\Api\RegisterDropsController;
 use App\Http\Controllers\Api\TipsController;
-
 use Illuminate\Support\Facades\Route;
 
 Route::get('/ping', function () {
