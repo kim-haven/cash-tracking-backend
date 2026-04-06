@@ -2,39 +2,76 @@
 
 namespace Database\Seeders;
 
+use App\Models\CashlessAtmEntry;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\DB;
 
 class CashlessAtmEntrySeeder extends Seeder
 {
     /**
-     * Sample row from the "Cashless ATM (Debit)" tab (dummy Belmont 2025 Cash Tracking).
+     * Cashless ATM (Debit) line items (HAVEN / sample sheet).
      */
     public function run(): void
     {
-        $now = now();
-
         $rows = [
-            [
-                'date' => '2025-01-01',
-                'employee' => 'Chirs',
-                'terminal' => 'reg2am',
-                'debit_terminal_total_dispensed' => '1165.00',
-                'total_tips' => '30.00',
-                'debit_total_sales' => '1086.41',
-                'total_cash_back' => '48.59',
-                'blaze_total_cash_less_sales' => '1086.41',
-                'total_cash_less_atm_change' => '48.59',
-                'notes' => null,
-            ],
+            ['2025-01-01', 'MATT', 'REG2AM', '1100.00', '0.00', '1045.41', '54.59', '1045.41', '59.59'],
+            ['2025-01-01', 'KAREN JOHAN', 'REG3AM', '985.00', '0.00', '950.73', '34.27', '950.73', '34.27'],
+            ['2025-01-01', 'ALEX', 'REG2PM', '1245.00', '0.00', '1168.74', '76.26', '1168.74', '76.26'],
+            ['2025-01-01', 'LINDA', 'REG3PM', '1545.00', '0.00', '1477.50', '67.50', '1477.50', '67.50'],
+            ['2025-01-02', 'BIANCA', 'REG2AM', '600.00', '0.00', '577.23', '22.77', '577.23', '22.77'],
+            ['2025-01-02', 'DESTINY', 'REG3AM', '775.00', '0.00', '729.24', '45.76', '729.24', '45.76'],
+            ['2025-01-02', 'CAILIN', 'REG1PM', '1665.00', '0.00', '1589.30', '75.70', '1531.94', '73.06'],
+            ['2025-01-02', 'ALEX', 'REG2PM', '1015.00', '0.00', '955.28', '59.72', '955.28', '59.72'],
+            ['2025-01-03', 'KAREN', 'REG3PM', '940.00', '0.00', '885.10', '54.90', '939.33', '55.67'],
+            ['2025-01-03', 'BIANCA', 'REG3AM', '635.00', '0.00', '616.01', '18.99', '616.01', '18.99'],
+            ['2025-01-03', 'DESTINY', 'REG1AM', '800.00', '0.00', '761.71', '38.29', '761.71', '38.29'],
+            ['2025-01-03', 'CAILIN', 'REG1PM', '2130.00', '0.00', '2029.29', '100.71', '2029.29', '100.71'],
+            ['2025-01-04', 'MATT', 'REG2PM', '2180.00', '0.00', '2078.46', '101.54', '2078.47', '101.13'],
+            ['2025-01-04', 'JUANITA', 'REG3PM', '1275.00', '0.00', '1223.44', '51.56', '1223.44', '51.56'],
+            ['2025-01-04', 'MATT', 'REG3AM', '335.00', '0.00', '306.44', '28.56', '306.44', '28.56'],
+            ['2025-01-04', 'JAYCEE', 'REG2AM', '1310.00', '0.00', '1235.36', '74.64', '1235.36', '74.64'],
+            ['2025-01-05', 'BIANCA', 'REG1PM', '995.00', '0.00', '951.93', '43.07', '951.93', '43.07'],
+            ['2025-01-05', 'KAREN', 'REG2PM', '1090.00', '0.00', '1043.38', '46.62', '1043.38', '46.62'],
+            ['2025-01-05', 'DESTINY', 'REG3PM', '1810.00', '0.00', '1713.84', '96.16', '1713.84', '96.16'],
+            ['2025-01-05', 'ALEX', 'REG1AM', '540.00', '0.00', '499.66', '40.34', '499.66', '40.34'],
+            ['2025-01-06', 'DIANE', 'REG2AM', '500.00', '0.00', '482.39', '17.61', '482.39', '17.61'],
+            ['2025-01-06', 'DESTINY', 'REG3AM', '1775.00', '0.00', '1696.62', '78.38', '1696.61', '78.39'],
+            ['2025-01-06', 'KAREN', 'REG1PM', '395.00', '0.00', '374.80', '20.20', '374.80', '20.20'],
+            ['2025-01-06', 'JAYCEE', 'REG2PM', '1190.00', '0.00', '1119.86', '70.14', '1119.86', '70.14'],
         ];
 
-        foreach ($rows as $row) {
-            DB::table('cashless_atm_entries')->insert([
-                ...$row,
-                'created_at' => $now,
-                'updated_at' => $now,
-            ]);
+        foreach ($rows as $r) {
+            [
+                $date,
+                $employee,
+                $terminal,
+                $dispensed,
+                $tips,
+                $debitSales,
+                $cashBack,
+                $blazeSales,
+                $atmChange,
+            ] = $r;
+
+            CashlessAtmEntry::query()->updateOrCreate(
+                [
+                    'date' => $date,
+                    'employee' => $employee,
+                    'terminal' => $terminal,
+                ],
+                [
+                    'debit_terminal_total_dispensed' => $dispensed,
+                    'total_tips' => $tips,
+                    'debit_total_sales' => $debitSales,
+                    'total_cash_back' => $cashBack,
+                    'blaze_total_cash_less_sales' => $blazeSales,
+                    'total_cash_less_atm_change' => $atmChange,
+                    'notes' => null,
+                    'is_deleted' => false,
+                    'deleted_at' => null,
+                    'deleted_by' => null,
+                    'delete_reason' => null,
+                ]
+            );
         }
     }
 }
