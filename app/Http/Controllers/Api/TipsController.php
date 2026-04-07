@@ -4,7 +4,9 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreTipRequest;
+use App\Http\Validation\PhysicalStoreIdRules;
 use App\Models\Tip;
+use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class TipsController extends Controller
@@ -28,9 +30,16 @@ class TipsController extends Controller
         'NOTE',
     ];
 
-    public function index()
+    public function index(Request $request)
     {
-        $tips = Tip::with('expense')->latest('date')->latest('id')->get();
+        $validated = $request->validate(PhysicalStoreIdRules::optionalQueryParameter());
+        $storeId = $validated['store_id'] ?? null;
+        $tips = Tip::query()
+            ->with('expense')
+            ->when($storeId !== null, fn ($q) => $q->where('store_id', $storeId))
+            ->latest('date')
+            ->latest('id')
+            ->get();
 
         return response()->json([
             'data' => $tips,
@@ -94,5 +103,4 @@ class TipsController extends Controller
             'Content-Type' => 'text/csv; charset=UTF-8',
         ]);
     }
-
 }

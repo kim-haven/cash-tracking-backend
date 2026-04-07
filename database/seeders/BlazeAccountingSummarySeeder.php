@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\BlazeAccountingSummary;
+use App\Models\Store;
 use Illuminate\Database\Seeder;
 
 class BlazeAccountingSummarySeeder extends Seeder
@@ -12,6 +13,9 @@ class BlazeAccountingSummarySeeder extends Seeder
      */
     public function run(): void
     {
+        $storeId = Store::query()->where('name', 'Fresno')->value('id')
+            ?? Store::query()->where('is_all_stores', false)->orderBy('id')->value('id');
+
         $rows = [
             [
                 'date' => '2025-01-01',
@@ -970,8 +974,11 @@ class BlazeAccountingSummarySeeder extends Seeder
         ];
 
         foreach ($rows as $row) {
+            $row['store_id'] = $storeId;
+
             BlazeAccountingSummary::query()->updateOrCreate(
                 [
+                    'store_id' => $storeId,
                     'date' => $row['date'],
                     'shop' => $row['shop'],
                     'company' => $row['company'],

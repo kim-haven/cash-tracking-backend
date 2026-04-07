@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class CashReconciliation extends Model
 {
@@ -10,6 +11,7 @@ class CashReconciliation extends Model
      * @var list<string>
      */
     protected $fillable = [
+        'store_id',
         'date',
         'controller',
         'cash_in',
@@ -41,5 +43,10 @@ class CashReconciliation extends Model
             'cashless_atm_difference' => 'decimal:2',
             'cash_vs_cashless_atm_difference' => 'decimal:2',
         ];
+    }
+
+    public function store(): BelongsTo
+    {
+        return $this->belongsTo(Store::class);
     }
 }

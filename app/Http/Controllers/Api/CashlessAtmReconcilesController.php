@@ -7,6 +7,7 @@ use App\Http\Requests\SoftDeleteCashlessAtmReconcileRequest;
 use App\Http\Requests\StoreCashlessAtmReconcileRequest;
 use App\Http\Requests\UpdateCashlessAtmReconcileRequest;
 use App\Http\Resources\CashlessAtmReconcileResource;
+use App\Http\Validation\PhysicalStoreIdRules;
 use App\Models\CashlessAtmReconcile;
 use Illuminate\Http\Request;
 
@@ -14,7 +15,11 @@ class CashlessAtmReconcilesController extends Controller
 {
     public function index(Request $request)
     {
+        $validated = $request->validate(PhysicalStoreIdRules::optionalQueryParameter());
+        $storeId = $validated['store_id'] ?? null;
+
         $query = CashlessAtmReconcile::query()
+            ->when($storeId !== null, fn ($q) => $q->where('store_id', $storeId))
             ->orderByDesc('date')
             ->orderByDesc('id');
 

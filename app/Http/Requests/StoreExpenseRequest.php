@@ -1,6 +1,8 @@
 <?php
+
 namespace App\Http\Requests;
 
+use App\Http\Validation\PhysicalStoreIdRules;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StoreExpenseRequest extends FormRequest
@@ -12,7 +14,7 @@ class StoreExpenseRequest extends FormRequest
 
     public function rules(): array
     {
-        return [
+        return array_merge(PhysicalStoreIdRules::requiredAttribute(), [
             'date' => 'required|date',
             'paid_by' => 'required|string|max:255',
             'pay_to' => 'required|string|max:255',
@@ -22,6 +24,6 @@ class StoreExpenseRequest extends FormRequest
             'description' => 'nullable|string',
             'cash_in' => 'nullable|numeric|min:0',
             'cash_out' => 'nullable|numeric|min:0',
-        ];
+        ]);
     }
 }

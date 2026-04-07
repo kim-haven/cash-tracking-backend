@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Http\Validation\PhysicalStoreIdRules;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
@@ -17,7 +18,7 @@ class StoreCashlessAtmEntryRequest extends FormRequest
      */
     public function rules(): array
     {
-        return [
+        return array_merge(PhysicalStoreIdRules::requiredAttribute(), [
             'date' => 'required|date',
             'employee' => 'required|string|max:255',
             'terminal' => 'required|string|max:255',
@@ -28,7 +29,7 @@ class StoreCashlessAtmEntryRequest extends FormRequest
             'blaze_total_cash_less_sales' => 'required|numeric',
             'total_cash_less_atm_change' => 'required|numeric',
             'notes' => 'nullable|string',
-        ];
+        ]);
     }
 
     protected function prepareForValidation(): void

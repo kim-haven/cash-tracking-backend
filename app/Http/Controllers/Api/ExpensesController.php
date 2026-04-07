@@ -1,22 +1,29 @@
 <?php
+
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\StoreExpenseRequest;
+use App\Http\Validation\PhysicalStoreIdRules;
 use App\Models\Expenses;
 use Illuminate\Http\Request;
-use App\Http\Requests\StoreExpenseRequest;
 
 class ExpensesController extends Controller
 {
     /**
      * GET all expenses
      */
-    public function index()
+    public function index(Request $request)
     {
-        $expenses = Expenses::latest()->get();
+        $validated = $request->validate(PhysicalStoreIdRules::optionalQueryParameter());
+        $storeId = $validated['store_id'] ?? null;
+        $expenses = Expenses::query()
+            ->when($storeId !== null, fn ($q) => $q->where('store_id', $storeId))
+            ->latest()
+            ->get();
 
         return response()->json([
-            'data' => $expenses
+            'data' => $expenses,
         ]);
     }
 
@@ -29,7 +36,7 @@ class ExpensesController extends Controller
 
         return response()->json([
             'message' => 'Expense created successfully',
-            'data' => $expense
+            'data' => $expense,
         ], 201);
     }
 
@@ -41,7 +48,7 @@ class ExpensesController extends Controller
         $expense = Expenses::findOrFail($id);
 
         return response()->json([
-            'data' => $expense
+            'data' => $expense,
         ]);
     }
 
@@ -55,7 +62,7 @@ class ExpensesController extends Controller
 
         return response()->json([
             'message' => 'Expense updated successfully',
-            'data' => $expense
+            'data' => $expense,
         ]);
     }
 
@@ -68,7 +75,7 @@ class ExpensesController extends Controller
         $expense->delete();
 
         return response()->json([
-            'message' => 'Expense deleted successfully'
+            'message' => 'Expense deleted successfully',
         ]);
     }
 }

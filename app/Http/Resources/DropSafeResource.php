@@ -14,6 +14,7 @@ class DropSafeResource extends JsonResource
     {
         return [
             'id' => $this->id,
+            'store_id' => $this->store_id,
             'bag_no' => $this->bag_no,
             'prepared_date' => $this->prepared_date?->format('Y-m-d'),
             'prepared_time' => $this->prepared_time,

@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Http\Validation\PhysicalStoreIdRules;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StoreCashReconciliationRequest extends FormRequest
@@ -13,7 +14,7 @@ class StoreCashReconciliationRequest extends FormRequest
 
     public function rules(): array
     {
-        return [
+        return array_merge(PhysicalStoreIdRules::requiredAttribute(), [
             'date' => 'required|date',
             'controller' => 'required|string|max:255',
             'cash_in' => 'nullable|numeric',
@@ -26,6 +27,6 @@ class StoreCashReconciliationRequest extends FormRequest
             'cashless_atm_difference' => 'nullable|numeric',
             'cash_vs_cashless_atm_difference' => 'nullable|numeric',
             'reason_notes' => 'nullable|string',
-        ];
+        ]);
     }
 }

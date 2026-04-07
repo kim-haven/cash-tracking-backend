@@ -1,8 +1,10 @@
 <?php
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Expenses extends Model
@@ -10,6 +12,7 @@ class Expenses extends Model
     use HasFactory;
 
     protected $fillable = [
+        'store_id',
         'date',
         'paid_by',
         'pay_to',
@@ -27,6 +30,11 @@ class Expenses extends Model
         'cash_in' => 'decimal:2',
         'cash_out' => 'decimal:2',
     ];
+
+    public function store(): BelongsTo
+    {
+        return $this->belongsTo(Store::class);
+    }
 
     public function tips(): HasMany
     {

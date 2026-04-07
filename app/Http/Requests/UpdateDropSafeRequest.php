@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use App\Http\Requests\Concerns\NormalizesDropSafeInput;
+use App\Http\Validation\PhysicalStoreIdRules;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
@@ -20,7 +21,7 @@ class UpdateDropSafeRequest extends FormRequest
      */
     public function rules(): array
     {
-        return [
+        return array_merge(PhysicalStoreIdRules::optionalAttribute(), [
             'bag_no' => 'sometimes|required|string|max:32',
             'prepared_date' => 'sometimes|required|date',
             'prepared_time' => 'sometimes|nullable|date_format:H:i:s',
@@ -31,7 +32,7 @@ class UpdateDropSafeRequest extends FormRequest
             'courier_given_by' => 'sometimes|nullable|string|max:255',
             'courier_received_by' => 'sometimes|nullable|string|max:255',
             'courier_amount' => 'sometimes|nullable|numeric',
-        ];
+        ]);
     }
 
     protected function prepareForValidation(): void

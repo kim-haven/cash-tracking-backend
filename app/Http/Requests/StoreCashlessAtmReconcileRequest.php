@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Http\Validation\PhysicalStoreIdRules;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
@@ -18,11 +19,14 @@ class StoreCashlessAtmReconcileRequest extends FormRequest
      */
     public function rules(): array
     {
-        return [
+        return array_merge(PhysicalStoreIdRules::requiredAttribute(), [
             'date' => [
                 'required',
                 'date',
-                Rule::unique('cashless_atm_reconciles', 'date')->where(fn ($query) => $query->where('is_deleted', false)),
+                Rule::unique('cashless_atm_reconciles', 'date')->where(function ($query) {
+                    return $query->where('is_deleted', false)
+                        ->where('store_id', $this->input('store_id'));
+                }),
             ],
             'debit_total_sales' => 'required|numeric',
             'blaze_total_cash_less_sales' => 'required|numeric',
@@ -30,7 +34,7 @@ class StoreCashlessAtmReconcileRequest extends FormRequest
             'total_cash_less_atm_change' => 'required|numeric',
             'total_cash_back' => 'required|numeric',
             'notes' => 'nullable|string',
-        ];
+        ]);
     }
 
     protected function prepareForValidation(): void

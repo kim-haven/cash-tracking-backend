@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class BlazeAccountingSummary extends Model
 {
@@ -12,6 +13,7 @@ class BlazeAccountingSummary extends Model
      * @var list<string>
      */
     protected $fillable = [
+        'store_id',
         'date',
         'shop',
         'company',
@@ -133,5 +135,10 @@ class BlazeAccountingSummary extends Model
             'items_sold' => 'integer',
             'items_refunded' => 'integer',
         ];
+    }
+
+    public function store(): BelongsTo
+    {
+        return $this->belongsTo(Store::class);
     }
 }

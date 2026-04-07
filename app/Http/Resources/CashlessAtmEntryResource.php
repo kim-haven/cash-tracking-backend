@@ -14,6 +14,7 @@ class CashlessAtmEntryResource extends JsonResource
     {
         return [
             'id' => $this->id,
+            'store_id' => $this->store_id,
             'date' => $this->date?->format('Y-m-d'),
             'employee' => $this->employee,
             'terminal' => $this->terminal,

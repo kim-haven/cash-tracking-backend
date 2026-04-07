@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class CashlessAtmEntry extends Model
 {
@@ -11,6 +12,7 @@ class CashlessAtmEntry extends Model
      * @var list<string>
      */
     protected $fillable = [
+        'store_id',
         'date',
         'employee',
         'terminal',
@@ -50,6 +52,11 @@ class CashlessAtmEntry extends Model
             'is_deleted' => 'boolean',
             'deleted_at' => 'datetime',
         ];
+    }
+
+    public function store(): BelongsTo
+    {
+        return $this->belongsTo(Store::class);
     }
 
     /**

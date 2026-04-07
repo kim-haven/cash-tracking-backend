@@ -9,6 +9,7 @@ use App\Http\Requests\SoftDeleteRegisterDropRequest;
 use App\Http\Requests\StoreRegisterDropRequest;
 use App\Http\Requests\UpdateRegisterDropRequest;
 use App\Http\Resources\RegisterDropResource;
+use App\Http\Validation\PhysicalStoreIdRules;
 use App\Models\RegisterDrop;
 use Illuminate\Http\Request;
 
@@ -19,7 +20,11 @@ class RegisterDropsController extends Controller
      */
     public function index(Request $request)
     {
+        $validated = $request->validate(PhysicalStoreIdRules::optionalQueryParameter());
+        $storeId = $validated['store_id'] ?? null;
+
         $query = RegisterDrop::query()
+            ->when($storeId !== null, fn ($q) => $q->where('store_id', $storeId))
             ->orderByDesc('date')
             ->orderByDesc('time_start')
             ->orderByDesc('id');

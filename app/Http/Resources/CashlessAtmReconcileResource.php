@@ -14,6 +14,7 @@ class CashlessAtmReconcileResource extends JsonResource
     {
         return [
             'id' => $this->id,
+            'store_id' => $this->store_id,
             'date' => $this->date?->format('Y-m-d'),
             'debit_total_sales' => $this->debit_total_sales,
             'blaze_total_cash_less_sales' => $this->blaze_total_cash_less_sales,

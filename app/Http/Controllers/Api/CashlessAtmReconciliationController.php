@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Validation\PhysicalStoreIdRules;
 use App\Models\BlazeAccountingSummary;
 use App\Models\CashlessAtmEntry;
 use Carbon\Carbon;
@@ -20,13 +21,18 @@ class CashlessAtmReconciliationController extends Controller
      */
     public function index(Request $request)
     {
+        $validated = $request->validate(PhysicalStoreIdRules::optionalQueryParameter());
+        $storeId = $validated['store_id'] ?? null;
+
         $debitByDay = CashlessAtmEntry::query()
+            ->when($storeId !== null, fn ($q) => $q->where('store_id', $storeId))
             ->selectRaw('date, SUM(debit_total_sales) as sum_debit_total_sales')
             ->groupBy('date')
             ->get()
             ->keyBy(fn ($row) => Carbon::parse($row->date)->format('Y-m-d'));
 
         $blazeByDay = BlazeAccountingSummary::query()
+            ->when($storeId !== null, fn ($q) => $q->where('store_id', $storeId))
             ->selectRaw('date, SUM(retail_value_of_sales) as sum_blaze_sales')
             ->groupBy('date')
             ->get()

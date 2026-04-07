@@ -11,6 +11,7 @@ class Tip extends Model
      * @var list<string>
      */
     protected $fillable = [
+        'store_id',
         'initials',
         'cash_tip_amount',
         'end_of_pay_period_total',
@@ -41,6 +42,11 @@ class Tip extends Model
             'debit_tips' => 'decimal:2',
             'total' => 'decimal:2',
         ];
+    }
+
+    public function store(): BelongsTo
+    {
+        return $this->belongsTo(Store::class);
     }
 
     public function expense(): BelongsTo

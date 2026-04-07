@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\CashlessAtmEntry;
+use App\Models\Store;
 use Illuminate\Database\Seeder;
 
 class CashlessAtmEntrySeeder extends Seeder
@@ -12,6 +13,9 @@ class CashlessAtmEntrySeeder extends Seeder
      */
     public function run(): void
     {
+        $storeId = Store::query()->where('name', 'Fresno')->value('id')
+            ?? Store::query()->where('is_all_stores', false)->orderBy('id')->value('id');
+
         $rows = [
             ['2025-01-01', 'MATT', 'REG2AM', '1100.00', '0.00', '1045.41', '54.59', '1045.41', '59.59'],
             ['2025-01-01', 'KAREN JOHAN', 'REG3AM', '985.00', '0.00', '950.73', '34.27', '950.73', '34.27'],
@@ -54,11 +58,13 @@ class CashlessAtmEntrySeeder extends Seeder
 
             CashlessAtmEntry::query()->updateOrCreate(
                 [
+                    'store_id' => $storeId,
                     'date' => $date,
                     'employee' => $employee,
                     'terminal' => $terminal,
                 ],
                 [
+                    'store_id' => $storeId,
                     'debit_terminal_total_dispensed' => $dispensed,
                     'total_tips' => $tips,
                     'debit_total_sales' => $debitSales,

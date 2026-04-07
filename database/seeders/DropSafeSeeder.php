@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Store;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
@@ -15,6 +16,9 @@ class DropSafeSeeder extends Seeder
     public function run(): void
     {
         $now = now();
+
+        $storeId = Store::query()->where('name', 'Belmont')->value('id')
+            ?? Store::query()->where('is_all_stores', false)->orderBy('id')->value('id');
 
         $rows = [
             [
@@ -69,6 +73,7 @@ class DropSafeSeeder extends Seeder
 
         foreach ($rows as $row) {
             DB::table('drop_safes')->insert([
+                'store_id' => $storeId,
                 ...$row,
                 'created_at' => $now,
                 'updated_at' => $now,

@@ -7,6 +7,7 @@ use App\Http\Requests\SoftDeleteDropSafeRequest;
 use App\Http\Requests\StoreDropSafeRequest;
 use App\Http\Requests\UpdateDropSafeRequest;
 use App\Http\Resources\DropSafeResource;
+use App\Http\Validation\PhysicalStoreIdRules;
 use App\Models\DropSafe;
 use Illuminate\Http\Request;
 
@@ -17,7 +18,11 @@ class DropSafesController extends Controller
      */
     public function index(Request $request)
     {
+        $validated = $request->validate(PhysicalStoreIdRules::optionalQueryParameter());
+        $storeId = $validated['store_id'] ?? null;
+
         $query = DropSafe::query()
+            ->when($storeId !== null, fn ($q) => $q->where('store_id', $storeId))
             ->orderByDesc('prepared_date')
             ->orderByDesc('id');
 

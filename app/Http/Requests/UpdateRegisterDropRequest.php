@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Http\Validation\PhysicalStoreIdRules;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
@@ -17,7 +18,7 @@ class UpdateRegisterDropRequest extends FormRequest
      */
     public function rules(): array
     {
-        return [
+        return array_merge(PhysicalStoreIdRules::optionalAttribute(), [
             'date' => 'sometimes|required|date',
             'register' => 'sometimes|required|string|max:255',
             'time_start' => 'sometimes|required|date_format:H:i:s',
@@ -26,7 +27,7 @@ class UpdateRegisterDropRequest extends FormRequest
             'cash_in' => 'sometimes|required|numeric',
             'initials' => 'sometimes|required|string|max:16',
             'notes' => 'sometimes|nullable|string',
-        ];
+        ]);
     }
 
     protected function prepareForValidation(): void

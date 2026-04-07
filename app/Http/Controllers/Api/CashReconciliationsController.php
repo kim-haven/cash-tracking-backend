@@ -4,20 +4,29 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreCashReconciliationRequest;
+use App\Http\Validation\PhysicalStoreIdRules;
 use App\Models\CashReconciliation;
 use App\Models\RegisterDrop;
 use Carbon\CarbonInterface;
+use Illuminate\Http\Request;
 
 class CashReconciliationsController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $rows = CashReconciliation::latest('date')->latest('id')->get();
+        $validated = $request->validate(PhysicalStoreIdRules::optionalQueryParameter());
+        $storeId = $validated['store_id'] ?? null;
+
+        $rows = CashReconciliation::query()
+            ->when($storeId !== null, fn ($q) => $q->where('store_id', $storeId))
+            ->latest('date')
+            ->latest('id')
+            ->get();
 
         $data = $rows->map(function (CashReconciliation $row) {
             return array_merge(
                 $row->toArray(),
-                $this->registerDropsForDate($row->date)
+                $this->registerDropsForDate($row->date, $row->store_id)
             );
         });
 
@@ -34,7 +43,7 @@ class CashReconciliationsController extends Controller
             'message' => 'Cash reconciliation created successfully',
             'data' => array_merge(
                 $row->toArray(),
-                $this->registerDropsForDate($row->date)
+                $this->registerDropsForDate($row->date, $row->store_id)
             ),
         ], 201);
     }
@@ -46,7 +55,7 @@ class CashReconciliationsController extends Controller
         return response()->json([
             'data' => array_merge(
                 $row->toArray(),
-                $this->registerDropsForDate($row->date)
+                $this->registerDropsForDate($row->date, $row->store_id)
             ),
         ]);
     }
@@ -60,7 +69,7 @@ class CashReconciliationsController extends Controller
             'message' => 'Cash reconciliation updated successfully',
             'data' => array_merge(
                 $row->toArray(),
-                $this->registerDropsForDate($row->date)
+                $this->registerDropsForDate($row->date, $row->store_id)
             ),
         ]);
     }
@@ -80,17 +89,21 @@ class CashReconciliationsController extends Controller
      *
      * @return array{amController: string, pmController: string, registerDrops: float|int|string}
      */
-    private function registerDropsForDate(CarbonInterface|string $date): array
+    private function registerDropsForDate(CarbonInterface|string $date, ?int $storeId = null): array
     {
         $dateString = $date instanceof CarbonInterface
             ? $date->format('Y-m-d')
             : (string) $date;
 
-        $amDrops = RegisterDrop::where('date', $dateString)
+        $amDrops = RegisterDrop::query()
+            ->where('date', $dateString)
+            ->when($storeId !== null, fn ($q) => $q->where('store_id', $storeId))
             ->whereTime('time_start', '<', '12:00:00')
             ->get();
 
-        $pmDrops = RegisterDrop::where('date', $dateString)
+        $pmDrops = RegisterDrop::query()
+            ->where('date', $dateString)
+            ->when($storeId !== null, fn ($q) => $q->where('store_id', $storeId))
             ->whereTime('time_start', '>=', '12:00:00')
             ->get();
 

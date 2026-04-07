@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class DropSafe extends Model
 {
@@ -11,6 +12,7 @@ class DropSafe extends Model
      * @var list<string>
      */
     protected $fillable = [
+        'store_id',
         'bag_no',
         'prepared_date',
         'prepared_time',
@@ -47,5 +49,10 @@ class DropSafe extends Model
             'is_deleted' => 'boolean',
             'deleted_at' => 'datetime',
         ];
+    }
+
+    public function store(): BelongsTo
+    {
+        return $this->belongsTo(Store::class);
     }
 }

@@ -14,6 +14,7 @@ class RegisterDropResource extends JsonResource
     {
         return [
             'id' => $this->id,
+            'store_id' => $this->store_id,
             'date' => $this->date?->format('Y-m-d'),
             'register' => $this->register,
             'time_start' => $this->time_start,

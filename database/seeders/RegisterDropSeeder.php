@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Store;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
@@ -15,6 +16,9 @@ class RegisterDropSeeder extends Seeder
     public function run(): void
     {
         $now = now();
+
+        $storeId = Store::query()->where('name', 'Belmont')->value('id')
+            ?? Store::query()->where('is_all_stores', false)->orderBy('id')->value('id');
 
         $rows = [
             ['date' => '2025-01-01', 'register' => 'reg2am', 'time_start' => '08:00:00', 'time_end' => null, 'action' => 'reg open', 'cash_in' => '-170.00', 'initials' => 'jm', 'notes' => null],
@@ -36,6 +40,7 @@ class RegisterDropSeeder extends Seeder
 
         foreach ($rows as $row) {
             DB::table('register_drops')->insert([
+                'store_id' => $storeId,
                 ...$row,
                 'created_at' => $now,
                 'updated_at' => $now,
