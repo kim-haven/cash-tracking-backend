@@ -40,7 +40,7 @@ class CashlessAtmReconciliationController extends Controller
 
         $days = $debitByDay->keys()->merge($blazeByDay->keys())->unique()->sortDesc()->values();
 
-        $rows = $days->map(function (string $day) use ($debitByDay, $blazeByDay) {
+        $rows = $days->map(function (string $day) use ($debitByDay, $blazeByDay, $storeId) {
             $debit = $debitByDay->get($day);
             $blaze = $blazeByDay->get($day);
 
@@ -48,6 +48,7 @@ class CashlessAtmReconciliationController extends Controller
             $sumBlaze = $this->moneyStr($blaze?->sum_blaze_sales ?? '0');
 
             return [
+                'store_id' => $storeId,
                 'date' => $day,
                 'sum_of_debit_total_sales' => $sumDebit,
                 'sum_of_blaze_sales' => $sumBlaze,
