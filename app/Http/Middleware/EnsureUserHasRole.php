@@ -21,8 +21,8 @@ class EnsureUserHasRole
             abort(Response::HTTP_FORBIDDEN);
         }
 
-        // Admins can access any route that uses this middleware (full app access).
-        if ($user->isAdmin()) {
+        // Superadmins and admins can access any route that uses this middleware (full app access).
+        if ($user->isAdminOrSuperAdmin()) {
             return $next($request);
         }
 

@@ -10,7 +10,7 @@ class StoreUserByAdminRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return $this->user()?->isAdmin() ?? false;
+        return $this->user()?->isAdminOrSuperAdmin() ?? false;
     }
 
     /**
@@ -18,11 +18,16 @@ class StoreUserByAdminRequest extends FormRequest
      */
     public function rules(): array
     {
+        $actor = $this->user();
+        $assignable = $actor?->isSuperAdmin()
+            ? [UserRole::Admin, UserRole::Manager, UserRole::User]
+            : [UserRole::Manager, UserRole::User];
+
         return [
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email'],
             'password' => ['required', 'string', 'min:8'],
-            'role' => ['required', Rule::enum(UserRole::class)],
+            'role' => ['required', Rule::in(array_map(fn (UserRole $r) => $r->value, $assignable))],
         ];
     }
 }

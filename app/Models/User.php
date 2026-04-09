@@ -8,6 +8,7 @@ use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
@@ -59,5 +60,22 @@ class User extends Authenticatable
     public function isAdmin(): bool
     {
         return $this->hasRole(UserRole::Admin);
+    }
+
+    public function isSuperAdmin(): bool
+    {
+        return $this->hasRole(UserRole::SuperAdmin);
+    }
+
+    /** Full admin-panel access (superadmin or admin). */
+    public function isAdminOrSuperAdmin(): bool
+    {
+        return $this->isSuperAdmin() || $this->isAdmin();
+    }
+
+    /** @return HasMany<UserNotification, $this> */
+    public function notifications(): HasMany
+    {
+        return $this->hasMany(UserNotification::class);
     }
 }
