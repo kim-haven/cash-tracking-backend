@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Enums\UserRole;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\ChangePasswordRequest;
 use App\Http\Requests\LoginRequest;
+use App\Http\Requests\RegisterRequest;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -41,6 +44,37 @@ class AuthController extends Controller
             'token_type' => 'Bearer',
             'user' => $this->userPayload($user),
         ]);
+    }
+
+    public function register(RegisterRequest $request): JsonResponse
+    {
+        $validated = $request->validated();
+
+        $user = User::create([
+            'name' => $validated['username'],
+            'email' => $validated['email'],
+            'password' => $validated['password'],
+            'role' => UserRole::User,
+        ]);
+
+        $token = $user->createToken('api')->plainTextToken;
+
+        return response()->json([
+            'message' => 'Registered.',
+            'token' => $token,
+            'access_token' => $token,
+            'token_type' => 'Bearer',
+            'user' => $this->userPayload($user),
+        ], 201);
+    }
+
+    public function changePassword(ChangePasswordRequest $request): JsonResponse
+    {
+        $user = $request->user();
+        $user->password = $request->validated('password');
+        $user->save();
+
+        return response()->json(['message' => 'Password updated.']);
     }
 
     public function logout(Request $request): JsonResponse

@@ -29,7 +29,7 @@ class DatabaseSeeder extends Seeder
             [
                 'name' => env('ADMIN_NAME', 'admin'),
                 'password' => env('ADMIN_PASSWORD', 'admin'),
-                'role' => UserRole::Admin,
+                'role' => UserRole::SuperAdmin,
             ]
         );
 
